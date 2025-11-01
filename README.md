@@ -32,6 +32,6 @@ The goal is to design, assemble, and program a complete phone system from the gr
 ## ⚙️ Technologies & Components
 - **MCU:** STM32 L4 Series
 - **Modem:** Quectel EC25-AF  
-- **Power:** USB-C input, Li-ion battery, charger IC (TP4056 / BQ2407x)  
+- **Power:** USB-C input, Li-ion battery, charger IC 
 - **Communication:** USB, UART, CAN 
 - **Tools:** KiCad, STM32CubeIDE
