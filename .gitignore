@@ -1,0 +1,119 @@
+# ========================
+# KiCad Project Files
+# ========================
+*.bak
+*.tmp
+*.kicad_prl
+*.kicad_sch-bak
+*.kicad_pcb-bak
+*-backups/
+_autosave-*
+*~*
+
+# Automatically generated
+*.net
+*.xml
+*.cmp
+fp-info-cache
+sym-lib-table-bak
+
+# Simulation & cache
+*.raw
+*.out
+*.log
+cache/
+*.cache*
+
+# Generated outputs
+*.zip
+*.rar
+*.7z
+Gerber/
+Outputs/
+Fabrication/
+*.gbr
+*.drl
+*.rpt
+*.pos
+
+# ========================
+# STM32 / Embedded Firmware
+# ========================
+# STM32CubeIDE / CubeMX
+/Debug/
+/Release/
+/Core/Inc/stm32*_hal_conf.h
+*.launch
+*.ioc-backup
+*.mxproject
+*.mxbackup
+
+# Object and build files
+*.o
+*.a
+*.d
+*.map
+*.elf
+*.lst
+*.hex
+*.bin
+*.axf
+*.dep
+
+# Compiler / Build system
+build/
+Build/
+build*/ 
+*.log
+*.srec
+*.dmp
+
+# ========================
+# IDEs / Editors
+# ========================
+# VS Code
+.vscode/
+*.code-workspace
+
+# CLion / JetBrains
+.idea/
+cmake-build*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# General
+.DS_Store
+Thumbs.db
+__pycache__/
+*.swp
+*.swo
+*.tmp
+
+# ========================
+# Optional Large Files
+# ========================
+*.step
+*.stp
+*.wrl
+*.iges
+*.igs
+
+# ========================
+# Personal or Private Files
+# ========================
+*.key
+*.crt
+*.pem
+*.pfx
+*.config
+*.ini
+*.json
+*.csv
+
+# ========================
+# Notes / Exports
+# ========================
+# Keep documentation, but ignore temporary exports
+/export/
+*.pdf~
