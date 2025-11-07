@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "symbols")(type "KiCad")(uri "C:/Users/asgar/Documents/phone_project/hardware/pcb_designs/modem_breakout/symbols.kicad_sym")(options "")(descr ""))
+)

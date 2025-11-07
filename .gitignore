@@ -47,7 +47,7 @@ Fabrication/
 *.ioc-backup
 *.mxproject
 *.mxbackup
-
+*.medata/
 # Object and build files
 *.o
 *.a
