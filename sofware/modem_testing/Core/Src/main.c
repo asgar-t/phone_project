@@ -20,7 +20,6 @@
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
-#include <string.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -34,7 +33,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define BUFFER_SIZE 20
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,10 +56,6 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 
 
-uint8_t rx_char;
-uint8_t rx_buffer[BUFFER_SIZE];
-uint8_t message_ready = 0;
-volatile int i = 0;
 
 
 /* USER CODE END 0 */
@@ -96,28 +90,21 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-
-
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
-	HAL_UART_Transmit(&huart2, (uint8_t*)"START\r\n", 7, HAL_MAX_DELAY);
+  HAL_UART_Receive_IT(&huart2, &rx_char_pc, 1);
+  HAL_UART_Receive_IT(&huart4, &rx_char_modem, 1);
+
+
 
   /* USER CODE END 2 */
-	HAL_UART_Receive_IT(&huart2, &rx_char, 1);
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-	  if (message_ready)
-	  {
 
-		  HAL_UART_Transmit(&huart2, rx_buffer, (uint16_t)strlen((char*)rx_buffer), HAL_MAX_DELAY);
-		  HAL_UART_Transmit(&huart2, "\r\n", 2, HAL_MAX_DELAY);
-
-		  message_ready = 0;
-
-
-	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -173,42 +160,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  /* Prevent unused argument(s) compilation warning */
 
-	HAL_UART_Transmit(&huart2, (const uint8_t*)&rx_char, 1, HAL_MAX_DELAY);
-
-	if (rx_char == '\r' || i == BUFFER_SIZE - 1)
-	{
-		if(rx_char == '\r')
-			HAL_UART_Transmit(&huart2, "\n", 1, HAL_MAX_DELAY);
-		if(i == BUFFER_SIZE -1)
-			HAL_UART_Transmit(&huart2, "\r\n", 2, HAL_MAX_DELAY);
-
-
-
-		rx_buffer[i] = '\0';
-		i = 0;
-		message_ready = 1;
-
-
-	}
-	else
-	{
-
-		rx_buffer[i++] = rx_char;
-
-	}
-	HAL_UART_Receive_IT(&huart2, &rx_char, 1);
-
-
-
-
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_UART_RxCpltCallback can be implemented in the user file.
-   */
-}
 /* USER CODE END 4 */
 
 /**
