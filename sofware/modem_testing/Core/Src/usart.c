@@ -36,6 +36,7 @@ void process_message(char* msg);
 
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_rx;
 
 /* UART4 init function */
 void MX_UART4_Init(void)
@@ -171,6 +172,24 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    /* USART2 DMA Init */
+    /* USART2_RX Init */
+    hdma_usart2_rx.Instance = DMA1_Channel6;
+    hdma_usart2_rx.Init.Request = DMA_REQUEST_2;
+    hdma_usart2_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_usart2_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_usart2_rx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_usart2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_usart2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_usart2_rx.Init.Mode = DMA_NORMAL;
+    hdma_usart2_rx.Init.Priority = DMA_PRIORITY_HIGH;
+    if (HAL_DMA_Init(&hdma_usart2_rx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart2_rx);
+
     /* USART2 interrupt Init */
     HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
@@ -217,6 +236,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     */
     HAL_GPIO_DeInit(GPIOA, USART_TX_Pin|USART_RX_Pin);
 
+    /* USART2 DMA DeInit */
+    HAL_DMA_DeInit(uartHandle->hdmarx);
+
     /* USART2 interrupt Deinit */
     HAL_NVIC_DisableIRQ(USART2_IRQn);
   /* USER CODE BEGIN USART2_MspDeInit 1 */
@@ -247,7 +269,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			buffer[buffer_index++] = rx_char_pc;
 
 		}
-		  HAL_UART_Receive_IT(&huart2, &rx_char_pc, 1);
+		  HAL_UART_Receive_DMA(&huart2, &rx_char_pc, 1);
 
 	}
 	else if (huart->Instance == UART4)
@@ -261,31 +283,36 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 void process_message(char* msg){
 
-	if(msg[0] = 'A' && msg[1] == 'T')
+	if((msg[0] == 'A') && (msg[1] == 'T'))
 	{
-		HAL_UART_Transmit(&huart4, msg, strnlen(msg, BUFFER_SIZE),HAL_MAX_Delay);
+		HAL_UART_Transmit(&huart4, (uint8_t*)msg, strnlen(msg, BUFFER_SIZE),HAL_MAX_DELAY);
 
 	}
 	else
 	{
-		if (strncmp(msg, "power on", BUFFER_SIZE) == 0)
+		if (strncmp(msg, "power on\r", BUFFER_SIZE) == 0)
 		{
+			HAL_UART_Transmit(&huart2, (uint8_t*)"VALID COMMAND\r\n", 15, HAL_MAX_DELAY);
 
 		}
-		else if(strncmp(msg, "power off", BUFFER_SIZE) == 0)
+		else if(strncmp(msg, "power off\r", BUFFER_SIZE) == 0)
 		{
+			HAL_UART_Transmit(&huart2, (uint8_t*)"VALID COMMAND\r\n", 15, HAL_MAX_DELAY);
 
 		}
-		else if(strncmp(msg, "power toggle", BUFFER_SIZE) == 0)
+		else if(strncmp(msg, "power toggle\r", BUFFER_SIZE) == 0)
 		{
+			HAL_UART_Transmit(&huart2, (uint8_t*)"VALID COMMAND\r\n", 15, HAL_MAX_DELAY);
 
 		}
-		else if(strncmp(msg, "codec reset", BUFFER_SIZE) == 0)
+		else if(strncmp(msg, "codec reset\r", BUFFER_SIZE) == 0)
 		{
+			HAL_UART_Transmit(&huart2, (uint8_t*)"VALID COMMAND\r\n", 15, HAL_MAX_DELAY);
 
 		}
-		else if(strncmp(msg, "status?", BUFFER_SIZE) == 0)
+		else if(strncmp(msg, "status?\r", BUFFER_SIZE) == 0)
 		{
+			HAL_UART_Transmit(&huart2, (uint8_t*)"VALID COMMAND\r\n", 15, HAL_MAX_DELAY);
 
 		}
 
@@ -293,7 +320,7 @@ void process_message(char* msg){
 
 		else
 		{
-			HAL_UART_Transmit(&huart2, "INVALID COMMAND", 15, HAL_MAX_Delay);
+			HAL_UART_Transmit(&huart2, (uint8_t*)"INVALID COMMAND\r\n", 17, HAL_MAX_DELAY);
 
 		}
 
